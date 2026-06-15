@@ -1,0 +1,17 @@
+# --- core (needed for the walking skeleton) ---
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+pydantic==2.9.2
+python-dotenv==1.0.1
+streamlit==1.39.0
+requests==2.32.3
+
+# --- LLM provider (P1: uncomment the one you use) ---
+# anthropic==0.39.0
+# openai==1.51.0
+# google-generativeai==0.8.3
+
+# --- RAG (P2: uncomment when wiring real retrieval) ---
+# chromadb==0.5.5
+# sentence-transformers==3.1.1
+# pypdf==5.0.1
