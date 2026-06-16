@@ -10,9 +10,11 @@ from pydantic import BaseModel, Field
 
 class Citation(BaseModel):
     """A grounded reference to the source law. Every conclusion must carry one."""
-    article_ref: str                       # e.g. "Article 77"
-    text: str                              # the relevant passage (paraphrase or short quote)
-    source: str = "Saudi Labor Law"
+    article_ref: str                       # e.g. "المادة الرابعة والثمانون"
+    text: str                              # the article body
+    source: str = "نظام العمل"             # the law name (file's first line)
+    chapter: Optional[str] = None          # the الباب heading the article sits under
+    folder: Optional[str] = None           # "labor_law" | "civil_procedure"
 
 
 class Profile(BaseModel):
@@ -22,6 +24,11 @@ class Profile(BaseModel):
     monthly_salary: Optional[float] = None
     employment_status: Optional[str] = None     # employed | terminated | resigned | seeking
     issue: Optional[str] = None                 # short description of the problem
+    # Facts a termination/resignation conclusion depends on — gathered before the
+    # agent computes compensation, notice pay, or for-cause outcomes.
+    contract_type: Optional[str] = None         # "fixed-term" | "indefinite"
+    notice_given: Optional[str] = None          # e.g. "none" | "30 days" | "yes"
+    termination_reason: Optional[str] = None    # stated reason / "for cause" vs not
     extra: dict = Field(default_factory=dict)
 
 

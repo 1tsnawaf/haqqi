@@ -1,0 +1,13 @@
+# Haqqi theme — calm, trustworthy green on a clean white surface.
+# Fine-grained styling (Arabic font, chat bubbles, panels) is injected as CSS in
+# ui/streamlit_app.py; these are the base tokens Streamlit's own widgets use.
+[theme]
+base = "light"
+primaryColor = "#2E7D5B"            # brand green (oklch ~0.49 0.10 155)
+backgroundColor = "#FFFFFF"          # content surface — pure white
+secondaryBackgroundColor = "#F1F6F3" # panels / case-file (faint green-tinted neutral)
+textColor = "#1E2A26"                # ink
+font = "sans serif"
+
+[client]
+toolbarMode = "minimal"

@@ -19,12 +19,18 @@ Built for the WeCloudData "From Coding to Intelligence" Hackathon · SDA May Coh
 
 Grounded in the Saudi Labor Law via RAG, with a source citation on every conclusion and a live "case-file" card so you can see what the agent understands.
 
-## Quickstart (runs in MOCK mode, no API key needed)
+## Quickstart
+
+> ⚠️ Use a fresh virtualenv. A globally-installed old FastAPI/Pydantic mix will fail
+> to import — the pinned versions in `requirements.txt` are what's tested.
 
 ```bash
 python -m venv .venv && source .venv/bin/activate     # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-cp .env.example .env
+cp .env.example .env                                  # then add your OPENAI_API_KEY
+
+# build the knowledge base index from the Arabic corpus in data/
+python -m app.rag.ingest
 
 # terminal 1 — backend
 uvicorn app.main:app --reload
@@ -33,17 +39,26 @@ uvicorn app.main:app --reload
 streamlit run ui/streamlit_app.py
 ```
 
-Open the Streamlit URL, type a question, and you'll get a (mock) cited answer end-to-end.
-That's the **walking skeleton** — now fill in the real logic.
+With `OPENAI_API_KEY` set you get real, grounded answers. With **no key**, the app
+still runs end-to-end in MOCK mode (deterministic reply + keyword retrieval), so the
+pipeline never hard-blocks.
 
-## Make it real
+## Status — the logic is wired
 
-| Step | Owner | File(s) |
+The three behaviors, RAG, and the agent loop are implemented (OpenAI-backed):
+
+| Piece | State | File(s) |
 |---|---|---|
-| Add the verified Labor Law text + build the index | P2 | `data/labor_law/`, `app/rag/ingest.py`, `app/rag/store.py`, `app/rag/search.py` |
-| Wire a real LLM provider | P1 | `app/agent/llm.py`, `.env` |
-| Implement the 3 behaviors | P1 | `app/behaviors/*.py`, `app/agent/loop.py` |
-| Polish UI + case-file card + disclaimer | P3 | `ui/streamlit_app.py`, `app/main.py` |
+| Arabic corpus + index (~411 articles: labor_law + civil_procedure, semantic + keyword) | ✅ | `data/`, `app/rag/*` |
+| LLM provider (OpenAI gpt-4o; text + JSON modes; mock fallback) | ✅ | `app/agent/llm.py`, `.env` |
+| 3 behaviors (X-ray, Rights radar, Battle plan) | ✅ | `app/behaviors/*.py` |
+| Agent loop (understand → retrieve → radar → ask → deliver + plan) | ✅ | `app/agent/loop.py` |
+| UI: Arabic / RTL, live case file, flagged clauses, cited article refs | ✅ | `ui/streamlit_app.py` |
+
+The agent answers **in Arabic**, grounded strictly in the retrieved articles, citing
+the governing article (e.g. `المادة الرابعة والثمانون`) on every legal point. See
+`data/labor_law/README.md` for the corpus format and how retrieval biases toward the
+labor law.
 
 ## Project structure
 

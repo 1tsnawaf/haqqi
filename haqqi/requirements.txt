@@ -1,4 +1,4 @@
-# --- core (needed for the walking skeleton) ---
+# --- core (FastAPI backend + Streamlit UI) ---
 fastapi==0.115.0
 uvicorn[standard]==0.30.6
 pydantic==2.9.2
@@ -6,12 +6,16 @@ python-dotenv==1.0.1
 streamlit==1.39.0
 requests==2.32.3
 
-# --- LLM provider (P1: uncomment the one you use) ---
-# anthropic==0.39.0
-# openai==1.51.0
-# google-generativeai==0.8.3
+# --- LLM provider (OpenAI) ---
+openai==1.51.0
+httpx==0.27.2          # pin: openai 1.51.0 breaks with httpx>=0.28 ("proxies" arg)
 
-# --- RAG (P2: uncomment when wiring real retrieval) ---
+# --- RAG (OpenAI embeddings + lightweight numpy vector store, no heavy deps) ---
+numpy==2.1.1
+
+# Optional providers / heavier RAG backends — uncomment if you switch:
+# anthropic==0.39.0
+# google-generativeai==0.8.3
 # chromadb==0.5.5
 # sentence-transformers==3.1.1
 # pypdf==5.0.1

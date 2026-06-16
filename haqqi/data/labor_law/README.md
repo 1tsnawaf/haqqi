@@ -1,13 +1,31 @@
-# Knowledge base — put the verified Labor Law text here
+# Knowledge base — the Arabic legal corpus
 
-Drop the **official, verified** Saudi Labor Law text as `.txt` files in this folder,
-ideally one file per article (e.g. `Article_77.txt`) so citations stay accurate.
+Haqqi is grounded in two corpora, one subfolder each under `data/`:
 
-Then build the index:
+| Folder | Role | Law | ~Articles |
+|---|---|---|---|
+| `labor_law/` | **Primary** — employment questions | نظام العمل | ~227 |
+| `civil_procedure/` | Secondary — "where/how to file" | نظام المرافعات الشرعية | ~184 |
+
+Retrieval biases toward `labor_law` (see `PRIMARY_BOOST` in `app/config.py`), so
+employment questions stay grounded in the labor law while civil-procedure articles
+still surface for filing questions.
+
+## File format (UTF-8)
+
+- Line 1 is the law name (e.g. `نظام العمل`).
+- Chapter headings start with `الباب`; section headings start with `الفصل`.
+- Articles are delimited by header lines like `المادة الخامسة والخمسون :` (the number
+  is in Arabic words). The body runs until the next such header.
+- Lines equal to `تعديلات المادة` (amendment markers) are ignored.
+
+## Build / rebuild the index
 
 ```bash
 python -m app.rag.ingest
 ```
 
-> Citation accuracy is the credibility of the entire product. Do not paraphrase
-> the law from memory — use the official source.
+This parses one chunk per article (keeping `article_ref`, `chapter`, `source` law
+name, and `folder`), embeds each with `text-embedding-3-small`, and writes
+`data/.index.json`. Re-run after any change to the corpus. Without an `OPENAI_API_KEY`
+it writes a text-only index and retrieval falls back to (Arabic-aware) keyword search.

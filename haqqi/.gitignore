@@ -11,3 +11,5 @@ venv/
 chroma/
 data/labor_law/*.txt
 !data/labor_law/.gitkeep
+.env
+.env
